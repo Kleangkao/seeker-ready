@@ -4,7 +4,7 @@ import { Tabs } from 'expo-router/js-tabs'
 import { Text, View } from 'react-native'
 import { AppProviders } from '@/features/core/data-access/app-providers'
 import { useTheme } from '@/features/shell/data-access/use-theme'
-import { cn } from '@/features/shell/utils/cn'
+import { cn } from 'heroui-native'
 
 export default function Layout() {
   return (

@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import {
   createSolanaDevnet,
   createSolanaLocalnet,
@@ -16,6 +17,7 @@ import { createClusterProps } from '@/features/cluster/data-access/create-cluste
 import { ShellUiThemeStatusBar } from '@/features/shell/ui/shell-ui-theme-status-bar'
 
 const identity: AppIdentity = { name: 'Kit Expo Uniwind' }
+const queryClient = new QueryClient()
 const clusterConfig = createClusterProps({
   clusters: [
     createSolanaDevnet(),
@@ -29,9 +31,11 @@ export function AppProviders({ children }: { children: ReactNode }) {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <HeroUINativeProvider config={{ devInfo: { stylingPrinciples: false } }}>
-        <ClusterProvider store={clusterConfig.store}>
-          <AppWalletProviders>{children}</AppWalletProviders>
-        </ClusterProvider>
+        <QueryClientProvider client={queryClient}>
+          <ClusterProvider store={clusterConfig.store}>
+            <AppWalletProviders>{children}</AppWalletProviders>
+          </ClusterProvider>
+        </QueryClientProvider>
       </HeroUINativeProvider>
     </GestureHandlerRootView>
   )

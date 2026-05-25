@@ -3,10 +3,10 @@ import { Description } from 'heroui-native/description'
 import { Label } from 'heroui-native/label'
 import { Radio } from 'heroui-native/radio'
 import { RadioGroup } from 'heroui-native/radio-group'
+import { cn } from 'heroui-native/utils'
 import { View } from 'react-native'
 
 import { useAppCluster } from '@/features/cluster/data-access/cluster-provider'
-import { cn } from '@/features/shell/utils/cn'
 
 export function AppClusterSwitcher() {
   const { cluster: activeCluster, clusters, setCluster } = useAppCluster()
