@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "scheme": "acme",
+    "userInterfaceStyle": "automatic",
+    "orientation": "default",
+    "web": {
+      "output": "static"
+    },
+    "name": "kit-expo-wallet",
+    "slug": "kit-expo-wallet",
+    "android": {
+      "package": "com.anonymous.kit_expo_wallet"
+    },
+    "plugins": ["expo-router"]
+  }
+}
