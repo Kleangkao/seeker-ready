@@ -1,11 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import {
-  createSolanaDevnet,
-  createSolanaLocalnet,
-  createSolanaMainnet,
-  createSolanaTestnet,
-  MobileWalletProvider,
-} from '@wallet-ui/react-native-kit'
+import { MobileWalletProvider } from '@wallet-ui/react-native-kit'
 import { HeroUINativeProvider } from 'heroui-native/provider'
 import { View } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
@@ -18,14 +12,7 @@ import { ShellUiThemeStatusBar } from '@/features/shell/ui/shell-ui-theme-status
 
 const identity: AppIdentity = { name: 'Kit Expo Uniwind' }
 const queryClient = new QueryClient()
-const clusterConfig = createClusterProps({
-  clusters: [
-    createSolanaDevnet(),
-    createSolanaLocalnet(),
-    createSolanaMainnet('https://api.mainnet-beta.solana.com'),
-    createSolanaTestnet(),
-  ],
-})
+const clusterConfig = createClusterProps()
 
 export function AppProviders({ children }: { children: ReactNode }) {
   return (

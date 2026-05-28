@@ -27,6 +27,20 @@ export default function SettingsLayout() {
           title: 'Settings',
         }}
       />
+      <Stack.Screen
+        name="cluster"
+        options={{
+          headerTitle: () => (
+            <ShellUiHeaderTitle
+              foregroundColor={foregroundColor}
+              icon="server-outline"
+              tintColor={tintColor}
+              title="Cluster"
+            />
+          ),
+          title: 'Cluster',
+        }}
+      />
     </Stack>
   )
 }

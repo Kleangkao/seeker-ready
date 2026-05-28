@@ -27,7 +27,7 @@
     "tailwind"
   ],
   "main": "./index.js",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "dependencies": {
     "@expo/metro-runtime": "~56.0.12",
     "@expo/vector-icons": "^15.0.2",

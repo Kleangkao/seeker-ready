@@ -3,14 +3,16 @@ import type { SolanaCluster, SolanaClusterId } from '@wallet-ui/react-native-kit
 import type { PropsWithChildren } from 'react'
 import { createContext, useContext, useMemo } from 'react'
 
-import { ClusterStore } from '@/features/cluster/data-access/cluster-store'
+import type { AppCluster, ClusterStore } from '@/features/cluster/data-access/cluster-store'
 import { createSolanaClient, type SolanaClient } from '@/features/cluster/data-access/create-solana-client'
 
 export interface ClusterContextValue {
   client: SolanaClient
   cluster: SolanaCluster
-  clusters: SolanaCluster[]
+  clusters: AppCluster[]
+  resetClusters(): void
   setCluster(cluster: SolanaClusterId): void
+  updateClusterUrl(cluster: SolanaClusterId, url: string): void
 }
 
 export interface ClusterProviderProps {
@@ -21,16 +23,19 @@ const ClusterContext = createContext<ClusterContextValue | undefined>(undefined)
 
 export function ClusterProvider({ children, store }: PropsWithChildren<ClusterProviderProps>) {
   const cluster = useStore(store.$cluster)
+  const clusters = useStore(store.$clusters)
   const client = useMemo(() => createSolanaClient(cluster), [cluster])
 
   const value = useMemo(
     () => ({
       client,
       cluster,
-      clusters: store.clusters,
+      clusters,
+      resetClusters: store.resetClusters,
       setCluster: store.setCluster,
+      updateClusterUrl: store.updateClusterUrl,
     }),
-    [client, cluster, store.clusters, store.setCluster],
+    [client, cluster, clusters, store.resetClusters, store.setCluster, store.updateClusterUrl],
   )
 
   return <ClusterContext.Provider value={value}>{children}</ClusterContext.Provider>
