@@ -29,6 +29,21 @@ export default function WalletLayout() {
           title: 'Wallet',
         }}
       />
+      <Stack.Screen
+        name="activity"
+        options={{
+          headerRight: () => <ClusterUiSelect contentWidth={280} triggerClassName="min-w-36 rounded-xl px-3 py-2" />,
+          headerTitle: () => (
+            <ShellUiHeaderTitle
+              foregroundColor={foregroundColor}
+              icon="time-outline"
+              tintColor={tintColor}
+              title="Activity"
+            />
+          ),
+          title: 'Activity',
+        }}
+      />
     </Stack>
   )
 }
