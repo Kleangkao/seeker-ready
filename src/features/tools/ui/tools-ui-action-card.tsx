@@ -1,18 +1,19 @@
-import { ReactNode, useState } from 'react'
+import { type ReactNode, useState } from 'react'
 import { View } from 'react-native'
-import { WalletUiStatusAlert } from './wallet-ui-status-alert'
-import { formatError } from '../util/format-error'
+import { Button } from 'heroui-native/button'
 import { Card } from 'heroui-native/card'
 import { Input } from 'heroui-native/input'
-import { Button } from 'heroui-native/button'
 
-export type WalletActionStatus = {
+import { formatError } from '@/features/wallet/util/format-error'
+import { ToolsUiStatusAlert } from '@/features/tools/ui/tools-ui-status-alert'
+
+export type ToolsActionStatus = {
   description: string
   status: 'danger' | 'success'
   title: string
 }
 
-export function WalletUiActionCard({
+export function ToolsUiActionCard({
   actionLabel,
   defaultText,
   description,
@@ -25,11 +26,11 @@ export function WalletUiActionCard({
   defaultText: string
   description: string
   isLoading: boolean
-  onSubmit(text: string): Promise<WalletActionStatus>
+  onSubmit(text: string): Promise<ToolsActionStatus>
   renderExtra?: (text: string) => ReactNode
   title: string
 }) {
-  const [status, setStatus] = useState<WalletActionStatus | null>(null)
+  const [status, setStatus] = useState<ToolsActionStatus | null>(null)
   const [text, setText] = useState(defaultText)
   const submitDisabled = !text.trim() || isLoading
 
@@ -42,7 +43,7 @@ export function WalletUiActionCard({
         </View>
         {renderExtra?.(text)}
         <Input autoCapitalize="none" editable={!isLoading} onChangeText={setText} placeholder="Text" value={text} />
-        {status ? <WalletUiStatusAlert {...status} /> : null}
+        {status ? <ToolsUiStatusAlert {...status} /> : null}
         <Button
           isDisabled={submitDisabled}
           variant="outline"

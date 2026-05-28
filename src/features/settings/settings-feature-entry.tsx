@@ -29,7 +29,7 @@ export function SettingsFeatureEntry() {
         <AppClusterSwitcher />
       </Card>
       <ShellUiThemeSwitcher />
-      <Text className="w-full text-center text-muted">Kit Expo Wallet v0.0.0</Text>
+      <Text className="w-full text-center text-muted ">Kit Expo Wallet v0.0.0</Text>
     </ShellUiPage>
   )
 }

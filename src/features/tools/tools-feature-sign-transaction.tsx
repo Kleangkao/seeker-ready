@@ -1,10 +1,11 @@
-import { Account, useMobileWallet } from '@wallet-ui/react-native-kit'
-import type { SolanaClient } from '@/features/cluster/data-access/create-solana-client'
 import { useMutation } from '@tanstack/react-query'
-import { executeWalletSignTransaction } from '@/features/wallet/util/execute-wallet-sign-transaction'
-import { WalletUiActionCard } from '@/features/wallet/ui/wallet-ui-action-card'
+import type { Account, useMobileWallet } from '@wallet-ui/react-native-kit'
 
-export function WalletFeatureSignTransaction({
+import type { SolanaClient } from '@/features/cluster/data-access/create-solana-client'
+import { ToolsUiActionCard } from '@/features/tools/ui/tools-ui-action-card'
+import { executeWalletSignTransaction } from '@/features/wallet/util/execute-wallet-sign-transaction'
+
+export function ToolsFeatureSignTransaction({
   account,
   client,
   signTransactions,
@@ -14,11 +15,11 @@ export function WalletFeatureSignTransaction({
   signTransactions: ReturnType<typeof useMobileWallet>['signTransactions']
 }) {
   const { isPending, mutateAsync } = useMutation({
-    mutationFn: (text: string) => executeWalletSignTransaction({ account, client, text, signTransactions }),
+    mutationFn: (text: string) => executeWalletSignTransaction({ account, client, signTransactions, text }),
   })
 
   return (
-    <WalletUiActionCard
+    <ToolsUiActionCard
       actionLabel="Sign Transaction"
       defaultText="Hello Solana!"
       description="Create a memo transaction and request a wallet signature."

@@ -1,14 +1,14 @@
-import { WalletUiActionCard } from '@/features/wallet/ui/wallet-ui-action-card'
 import {
   useWalletSignAndSendTransaction,
-  UseWalletSignAndSendTransactionProps,
-} from './data-access/use-wallet-sign-and-send-transaction'
+  type UseWalletSignAndSendTransactionProps,
+} from '@/features/wallet/data-access/use-wallet-sign-and-send-transaction'
+import { ToolsUiActionCard } from '@/features/tools/ui/tools-ui-action-card'
 
-export function WalletFeatureSignAndSendTransaction(props: UseWalletSignAndSendTransactionProps) {
+export function ToolsFeatureSignAndSendTransaction(props: UseWalletSignAndSendTransactionProps) {
   const { isPending, mutateAsync } = useWalletSignAndSendTransaction(props)
 
   return (
-    <WalletUiActionCard
+    <ToolsUiActionCard
       actionLabel="Sign and Send Transaction"
       defaultText="Hello Solana!"
       description="Create a memo transaction and submit it through the wallet."

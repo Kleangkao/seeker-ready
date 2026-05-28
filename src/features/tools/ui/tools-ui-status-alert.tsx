@@ -1,12 +1,8 @@
 import { Alert } from 'heroui-native'
 
-type WalletUiStatusAlertProps = {
-  description: string
-  status: 'danger' | 'success'
-  title: string
-}
+import type { ToolsActionStatus } from '@/features/tools/ui/tools-ui-action-card'
 
-export function WalletUiStatusAlert({ description, status, title }: WalletUiStatusAlertProps) {
+export function ToolsUiStatusAlert({ description, status, title }: ToolsActionStatus) {
   return (
     <Alert status={status}>
       <Alert.Indicator />

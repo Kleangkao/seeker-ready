@@ -1,9 +1,10 @@
-import { Account, SignInOutput, type SignInPayload, type SolanaClusterId } from '@wallet-ui/react-native-kit'
-import { WalletUiActionCard } from '@/features/wallet/ui/wallet-ui-action-card'
 import { getBase64Decoder } from '@solana/kit'
+import type { Account, SignInOutput, SignInPayload, SolanaClusterId } from '@wallet-ui/react-native-kit'
+
+import { ToolsUiActionCard } from '@/features/tools/ui/tools-ui-action-card'
 import { useWalletSignIn } from '@/features/wallet/data-access/use-wallet-sign-in'
 
-export function WalletFeatureSignIn({
+export function ToolsFeatureSignIn({
   account,
   cluster,
   signIn,
@@ -15,7 +16,7 @@ export function WalletFeatureSignIn({
   const { isPending, mutateAsync } = useWalletSignIn({ account, cluster, signIn })
 
   return (
-    <WalletUiActionCard
+    <ToolsUiActionCard
       actionLabel="Sign In"
       defaultText="We hope you enjoy your stay!"
       description="Create and sign a Solana Sign-In payload."
