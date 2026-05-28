@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Card } from 'heroui-native/card'
-import { View } from 'react-native'
+import { Text, View } from 'react-native'
 
 import { AppClusterSwitcher } from '@/features/core/ui/app-cluster-switcher'
 import { useTheme } from '@/features/shell/data-access/use-theme'
@@ -18,20 +18,6 @@ export function SettingsFeatureEntry() {
         icon={<Ionicons color={tintColor} name="settings-outline" size={30} />}
         title="Settings"
       />
-
-      <Card className="gap-4 p-5">
-        <Card.Body className="gap-1">
-          <View className="flex-row items-center gap-2">
-            <Ionicons color={tintColor} name="color-palette-outline" size={22} />
-            <Card.Title className="text-xl font-bold">Appearance</Card.Title>
-          </View>
-          <Card.Description className="leading-relaxed">
-            Switch the app theme without leaving the Android tab shell.
-          </Card.Description>
-        </Card.Body>
-        <ShellUiThemeSwitcher />
-      </Card>
-
       <Card className="gap-4 p-5">
         <Card.Body className="gap-1">
           <View className="flex-row items-center gap-2">
@@ -42,6 +28,8 @@ export function SettingsFeatureEntry() {
         </Card.Body>
         <AppClusterSwitcher />
       </Card>
+      <ShellUiThemeSwitcher />
+      <Text className="w-full text-center text-muted">Kit Expo Wallet v0.0.0</Text>
     </ShellUiPage>
   )
 }
