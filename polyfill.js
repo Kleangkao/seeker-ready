@@ -1,4 +1,6 @@
-// polyfill.js
-import { install } from 'react-native-quick-crypto'
+import { Platform } from 'react-native'
 
-install()
+if (Platform.OS !== 'web') {
+  const { install } = require('react-native-quick-crypto')
+  install()
+}

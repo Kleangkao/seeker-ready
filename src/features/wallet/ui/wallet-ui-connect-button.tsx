@@ -1,7 +1,10 @@
-import { Button, type ButtonRootProps } from 'heroui-native/button'
 import { useToast } from 'heroui-native/toast'
+import { cn } from 'heroui-native/utils'
+import { Platform, Text } from 'react-native'
 import type { PropsWithChildren } from 'react'
 
+import { ReadinessUiPressable } from '@/features/readiness/ui/readiness-ui-pressable'
+import { useTheme } from '@/features/shell/data-access/use-theme'
 import { formatError } from '@/features/wallet/util/format-error'
 
 const WALLET_CONNECT_TOAST_ID = 'wallet-connect-error'
@@ -42,10 +45,23 @@ export function WalletUiConnectButton({
   children = 'Connect Wallet',
   connect,
   size,
-}: PropsWithChildren<{ connect: () => Promise<unknown>; size?: ButtonRootProps['size'] }>) {
+}: PropsWithChildren<{ connect: () => Promise<unknown>; size?: 'sm' | 'md' | 'lg' }>) {
   const { toast } = useToast()
+  const { tintColor } = useTheme()
+  const isSmall = size === 'sm'
 
   async function handleConnect() {
+    if (Platform.OS === 'web') {
+      toast.show({
+        description: 'Wallet connection requires the Android development build with Mobile Wallet Adapter.',
+        id: WALLET_CONNECT_TOAST_ID,
+        label: 'Not available on web',
+        placement: 'bottom',
+        variant: 'warning',
+      })
+      return
+    }
+
     try {
       toast.hide(WALLET_CONNECT_TOAST_ID)
       await connect()
@@ -71,8 +87,18 @@ export function WalletUiConnectButton({
   }
 
   return (
-    <Button size={size} onPress={() => void handleConnect()}>
-      {children}
-    </Button>
+    <ReadinessUiPressable
+      accessibilityRole="button"
+      className={cn(
+        'items-center rounded-xl px-4 active:opacity-80',
+        isSmall ? 'py-2' : 'py-3',
+      )}
+      style={{ backgroundColor: tintColor }}
+      onPress={() => void handleConnect()}
+    >
+      <Text className={cn('font-semibold text-white', isSmall ? 'text-sm' : 'text-base')}>
+        {children}
+      </Text>
+    </ReadinessUiPressable>
   )
 }

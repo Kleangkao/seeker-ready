@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { AppIdentity } from '@wallet-ui/react-native-kit'
 import { MobileWalletProvider } from '@wallet-ui/react-native-kit'
 import { HeroUINativeProvider } from 'heroui-native/provider'
-import { View } from 'react-native'
+import { Platform, View } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import type { PropsWithChildren, ReactNode } from 'react'
 
@@ -10,13 +10,14 @@ import { ClusterProvider, useAppCluster } from '@/features/cluster/data-access/c
 import { createClusterProps } from '@/features/cluster/data-access/create-cluster-props'
 import { ShellUiThemeStatusBar } from '@/features/shell/ui/shell-ui-theme-status-bar'
 
-const identity: AppIdentity = { name: 'Kit Expo Uniwind', uri: 'kitexpowallet://kit-expo-wallet' }
+const identity: AppIdentity = { name: 'Seeker Ready', uri: 'seekerready://seeker-ready' }
 const queryClient = new QueryClient()
 const clusterConfig = createClusterProps()
+const AppRoot = Platform.OS === 'web' ? View : GestureHandlerRootView
 
 export function AppProviders({ children }: { children: ReactNode }) {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <AppRoot style={{ flex: 1 }}>
       <HeroUINativeProvider config={{ devInfo: { stylingPrinciples: false } }}>
         <QueryClientProvider client={queryClient}>
           <ClusterProvider store={clusterConfig.store}>
@@ -24,7 +25,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
           </ClusterProvider>
         </QueryClientProvider>
       </HeroUINativeProvider>
-    </GestureHandlerRootView>
+    </AppRoot>
   )
 }
 

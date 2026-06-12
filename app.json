@@ -2,12 +2,12 @@
   "expo": {
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#E8F0FA",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "package": "com.anonymous.kit_expo_wallet",
+      "package": "com.seekerready.app",
       "predictiveBackGestureEnabled": false
     },
     "experiments": {
@@ -16,9 +16,10 @@
     },
     "icon": "./assets/images/icon.png",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/images/icon.png"
     },
-    "name": "Kit Expo Wallet",
+    "name": "Seeker Ready",
+    "description": "Post-unboxing readiness companion for Solana Mobile users. Not official Seeker onboarding.",
     "orientation": "portrait",
     "plugins": [
       "expo-router",
@@ -29,17 +30,17 @@
             "image": "./assets/images/splash-icon.png",
             "imageWidth": 76
           },
-          "backgroundColor": "#208AEF"
+          "backgroundColor": "#E8F0FA"
         }
       ],
       "expo-status-bar"
     ],
-    "scheme": "kit-expo-wallet",
-    "slug": "kit-expo-wallet",
+    "scheme": "seeker-ready",
+    "slug": "seeker-ready",
     "userInterfaceStyle": "automatic",
     "web": {
       "favicon": "./assets/images/favicon.png",
-      "output": "static"
+      "output": "single"
     }
   }
 }

@@ -1,11 +1,8 @@
-import { createMMKV } from 'react-native-mmkv'
 import { createClusterStore, type ClusterStore } from '@/features/cluster/data-access/cluster-store'
-import { createMmkvCache } from '@/features/cluster/data-access/mmkv-cache'
+import { createSyncCache } from '@/features/cluster/data-access/create-sync-cache'
 
 export const APP_CLUSTER_STORAGE_KEY = 'wallet-ui:cluster'
-export const APP_STORAGE_ID = 'kit-expo-wallet'
-
-const storage = createMMKV({ id: APP_STORAGE_ID })
+export const APP_STORAGE_ID = 'seeker-ready'
 
 export interface ClusterProviderConfig {
   store: ClusterStore
@@ -13,7 +10,10 @@ export interface ClusterProviderConfig {
 
 export function createClusterProps(): ClusterProviderConfig {
   const store = createClusterStore({
-    cache: createMmkvCache({ storage, storageKey: APP_CLUSTER_STORAGE_KEY }),
+    cache: createSyncCache({
+      storageId: APP_STORAGE_ID,
+      storageKey: APP_CLUSTER_STORAGE_KEY,
+    }),
   })
   return { store }
 }

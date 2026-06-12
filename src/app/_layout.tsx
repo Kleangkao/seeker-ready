@@ -31,21 +31,12 @@ function AppTabs() {
       }}
     >
       <Tabs.Screen
-        name="(wallet)"
+        name="(ready)"
         options={{
           tabBarIcon: ({ color, focused, size }) => (
-            <Ionicons color={color} name={focused ? 'wallet' : 'wallet-outline'} size={size} />
+            <Ionicons color={color} name={focused ? 'checkmark-circle' : 'checkmark-circle-outline'} size={size} />
           ),
-          title: 'Wallet',
-        }}
-      />
-      <Tabs.Screen
-        name="tools"
-        options={{
-          tabBarIcon: ({ color, focused, size }) => (
-            <Ionicons color={color} name={focused ? 'construct' : 'construct-outline'} size={size} />
-          ),
-          title: 'Tools',
+          title: 'Ready',
         }}
       />
       <Tabs.Screen
