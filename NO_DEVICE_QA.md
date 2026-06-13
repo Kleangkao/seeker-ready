@@ -68,12 +68,12 @@ If you see a Reanimated/Worklets version error, ensure `react-native-worklets` i
 
 ## Section B — Can verify on Android Emulator
 
-Possible with Android Studio + AVD, but **MWA wallet behavior is often incomplete** on emulators.
+Possible with Android Studio + AVD. **Non-wallet checks passed** on 2026-06-13 — full detail in [EMULATOR_QA.md](./EMULATOR_QA.md).
 
 ### Setup
 
 1. Install [Android Studio](https://developer.android.com/studio)
-2. Create a virtual device (Pixel, API 34+ recommended)
+2. AVD: `SeekerReady_Pixel7_API34` (Pixel 7, API 34, Google APIs, x86_64)
 3. Start emulator, then:
 
 ```bash
@@ -83,20 +83,21 @@ npm run android
 
 | # | Check | Expected | Pass |
 |---|-------|----------|------|
-| B.1 | Dev build installs | Seeker Ready opens on emulator | [ ] |
-| B.2 | Ready tab first | Checklist home, not wallet demo | [ ] |
-| B.3 | Tabs | Ready + Settings only | [ ] |
-| B.4 | UI layout | Mobile layout readable; scroll works | [ ] |
-| B.5 | Local persistence | Concept / safety / resource progress survives reload | [ ] |
-| B.6 | Reset | Clears progress + shows toast | [ ] |
-| B.7 | External links | May open browser on emulator | [ ] |
+| B.1 | Dev build installs | Seeker Ready opens on emulator | [x] |
+| B.2 | Ready tab first | Checklist home, not wallet demo | [x] |
+| B.3 | Tabs | Ready + Settings only | [x] |
+| B.4 | UI layout | Mobile layout readable; scroll works | [x] |
+| B.5 | Local persistence | Concept / safety / resource progress survives reload | [x] |
+| B.6 | Reset | Clears progress + shows toast | [x] |
+| B.7 | External links | Opens emulator browser (use system Back/Recents to return) | [x] |
 
-**Emulator caveat:** MWA connect/sign may fail or be unavailable without a wallet app on the emulator. Treat B.8+ as optional / blocked unless wallet is installed.
+**Emulator caveat:** MWA connect/sign unavailable without a wallet app on the emulator. B.8+ remain **blocked**.
 
 | # | Check | Expected | Pass |
 |---|-------|----------|------|
-| B.8 | MWA connect | Wallet picker appears | [ ] |
-| B.9 | Sign message | Wallet signing prompt appears | [ ] |
+| B.8 | MWA connect | Wallet picker appears | Blocked |
+| B.9 | Sign message | Wallet signing prompt appears | Blocked |
+| B.10 | Full 8/8 completion | Badge after wallet steps | Blocked |
 
 ---
 

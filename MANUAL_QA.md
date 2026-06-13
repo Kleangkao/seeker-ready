@@ -4,7 +4,9 @@ Use this checklist on an **Android custom Expo development build** with a **comp
 
 **Do not use Expo Go** for this pass. MWA connect and sign-message require native wallet integration.
 
-> **No Android device?** Start with [NO_DEVICE_QA.md](./NO_DEVICE_QA.md) for Web/static/emulator checks. Section C items in that doc still require real device + MWA wallet testing.
+> **No Android device?** Start with [NO_DEVICE_QA.md](./NO_DEVICE_QA.md) for Web/static checks.
+>
+> **Android Emulator (non-wallet)?** See [EMULATOR_QA.md](./EMULATOR_QA.md) — learning steps, persistence, and reset **passed** on `SeekerReady_Pixel7_API34`. Wallet sections below remain **blocked** until Mock MWA Wallet or a compatible wallet is installed.
 
 ## Prerequisites
 
@@ -143,3 +145,4 @@ Use this checklist on an **Android custom Expo development build** with a **comp
 - Sign-message requires an **active wallet connection** at test time, even if connect step completion is persisted.
 - MWA behavior can differ between Seeker, emulator, and third-party MWA wallets.
 - Reset clears persisted progress; reconnecting may immediately re-complete connect wallet via MWA observation.
+- **External resource links** open the system browser on Android. The emulator browser has no dedicated “back to app” button — use Android Back, Recents, or reopen Seeker Ready. Normal platform behavior; no app change required for MVP (see [EMULATOR_QA.md](./EMULATOR_QA.md)).
