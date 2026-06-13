@@ -6,7 +6,9 @@ Use this checklist on an **Android custom Expo development build** with a **comp
 
 > **No Android device?** Start with [NO_DEVICE_QA.md](./NO_DEVICE_QA.md) for Web/static checks.
 >
-> **Android Emulator (non-wallet)?** See [EMULATOR_QA.md](./EMULATOR_QA.md) — learning steps, persistence, and reset **passed** on `SeekerReady_Pixel7_API34`. Wallet sections below remain **blocked** until Mock MWA Wallet or a compatible wallet is installed.
+> **Android Emulator (non-wallet)?** See [EMULATOR_QA.md](./EMULATOR_QA.md) — learning steps, persistence, and reset **passed** on `SeekerReady_Pixel7_API34`.
+>
+> **Android Emulator (Mock MWA Wallet)?** Connect wallet **passed** with `com.solana.mwallet` on 2026-06-14. Sign prompt showed the correct message. Sign/local verification/`8/8` are **paused** for manual biometric approval — see [EMULATOR_QA.md — Resume manual wallet QA](./EMULATOR_QA.md#resume-manual-wallet-qa). Real Seeker/device QA remains **pending**.
 
 ## Prerequisites
 
@@ -146,3 +148,4 @@ Use this checklist on an **Android custom Expo development build** with a **comp
 - MWA behavior can differ between Seeker, emulator, and third-party MWA wallets.
 - Reset clears persisted progress; reconnecting may immediately re-complete connect wallet via MWA observation.
 - **External resource links** open the system browser on Android. The emulator browser has no dedicated “back to app” button — use Android Back, Recents, or reopen Seeker Ready. Normal platform behavior; no app change required for MVP (see [EMULATOR_QA.md](./EMULATOR_QA.md)).
+- **Mock MWA Wallet on emulator** requires screen lock + **Authenticate** in `mwallet` before connect/sign. Sign uses biometric approval; **do not automate** PIN/biometric taps (lockout risk). Resume steps: [EMULATOR_QA.md](./EMULATOR_QA.md#resume-manual-wallet-qa). Mock wallet is not production-equivalent to Seed Vault / Seeker hardware.
