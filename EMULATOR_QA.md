@@ -1,6 +1,6 @@
 # Seeker Ready — Android Emulator QA
 
-Non-wallet QA **passed** on **Android Studio Emulator**. Mock MWA Wallet is **installed**; connect **passed**; sign / local verification / `8/8` are **paused** pending manual biometric approval on the emulator UI.
+Non-wallet QA **passed** on **Android Studio Emulator**. **Full emulator QA passed** on `SeekerReady_Pixel7_API34` (2026-06-14): Mock MWA connect, safe sign-message, local signature verification, concept cards, trusted resources, safety self-check, **`8/8` completion badge**, and persistence after restart all **passed**. Real Seeker / Seed Vault QA remains **pending**.
 
 > **Full device + MWA pass:** Use [MANUAL_QA.md](./MANUAL_QA.md) after wallet steps are complete on emulator or hardware.
 >
@@ -12,16 +12,74 @@ Non-wallet QA **passed** on **Android Studio Emulator**. Mock MWA Wallet is **in
 
 | Area | Status |
 |------|--------|
+| **Full emulator QA (`8/8`)** | **Pass** (2026-06-14) |
 | Mock MWA Wallet installed | **Yes** — `com.solana.mwallet` on `SeekerReady_Pixel7_API34` |
-| Connect wallet (emulator) | **Pass** |
+| MWA connect | **Pass** |
 | Shortened address | **Pass** — e.g. `Connected: 3PMU...FLzP` |
-| Safe sign-message prompt | **Pass (prompt only)** — correct test message shown in mock wallet sheet |
-| Sign / local verification | **Pending manual** — biometric approval not completed (prior automated `adb` taps caused lockout; not a Seeker Ready product bug) |
-| Full `8/8` badge | **Pending manual** |
-| Persistence after restart (wallet steps) | **Pending manual** |
+| Safe sign-message | **Pass** |
+| Local signature verification | **Pass** — UI: *Signature verified. This test did not move funds.* |
+| Concept cards | **Pass** |
+| Trusted resource step | **Pass** |
+| Safety self-check | **Pass** |
+| Full `8/8` completion badge | **Pass** |
+| Persistence after restart | **Pass** — all completion state retained after force-close/reopen |
 | Real Seeker / Seed Vault QA | **Pending** — Mock MWA is not production-equivalent |
 
-**Paused:** Do not automate biometric/PIN taps. Complete wallet sign + `8/8` manually when available (see [Resume manual wallet QA](#resume-manual-wallet-qa)).
+See [Sign-message verification fix](#sign-message-verification-fix-2026-06-14) for root cause and fix summary.
+
+---
+
+## Sign-message verification fix (2026-06-14)
+
+### Previous failure (manual test)
+
+After approving **Test safe signature** in Mock MWA Wallet, Seeker Ready returned to the app but showed:
+
+- **Signature verification failed**
+- **Could not decode the signed message returned by the wallet.**
+
+Connect wallet and the wallet sign prompt both worked; only **local verification** failed.
+
+### Root cause
+
+**Format mismatch** between what Seeker Ready expected and what MWA `sign_messages` commonly returns:
+
+| Layer | Expected by app (before fix) | Returned by Mock MWA / MWA `sign_messages` |
+|-------|------------------------------|--------------------------------------------|
+| Payload shape | Solana **off-chain message envelope** bytes (`getOffchainMessageEnvelopeDecoder`) | **Raw 64-byte Ed25519 signature** over the UTF-8 message bytes passed to `signMessages` |
+| Signing input | Envelope preamble + structured off-chain message | Plain `TextEncoder` bytes of the test string |
+
+Mock MWA Wallet (`MobileWalletAdapterViewModel.kt`) calls `SolanaSigningUseCase.signMessage(payload, keypair).**signature**` — the 64-byte signature only, not `signedPayload` (message + signature) and not a Kit off-chain envelope.
+
+This is an MWA signed-payload shape issue, not a missing wallet connection or wrong test message.
+
+### Fix summary
+
+Updated `src/features/wallet/util/execute-wallet-sign-message.tsx`:
+
+1. **Try off-chain envelope first** — keeps compatibility with wallets that return a full Solana off-chain message envelope.
+2. **Fallback: raw MWA signed payload** — if envelope decode fails, verify:
+   - **64 bytes** → raw Ed25519 signature over the expected UTF-8 message bytes, or
+   - **message length + 64 bytes** → `message || signature` concatenation (common `signedPayload` shape).
+3. **Local verification only** — uses `@solana/kit` `getPublicKeyFromAddress` + `verifySignature` against the connected address. No bypass, no mock-wallet name special-case.
+4. **`__DEV__` diagnostics** — logs payload kind, byte lengths, and connected address (no secrets).
+
+### Post-fix emulator status
+
+| Check | Result | Notes |
+|-------|--------|-------|
+| Updated build installed (`npx expo run:android --no-bundler`) | **Pass** | 2026-06-14 |
+| MWA connect on emulator | **Pass** | Mock MWA Wallet `com.solana.mwallet` |
+| Safe sign-message prompt + approval | **Pass** | Exact test message shown and approved in mock wallet |
+| Local signature verification | **Pass** | No decode error; verified against connected public key |
+| Safe signature step completion | **Pass** | UI: *Signature verified. This test did not move funds.* |
+| Concept cards | **Pass** | MWA, Seed Vault, dApp Store, Seeker ID marked read |
+| Trusted resource step | **Pass** | Official link opened in emulator browser |
+| Safety self-check | **Pass** | All five safety habit items completed |
+| Full `8/8` completion badge | **Pass** | Progress header `8/8 ready`; completion badge visible |
+| Persistence after restart | **Pass** | Force-close/reopen: full `8/8` state and badge retained |
+
+**Full manual pass (2026-06-14):** Wallet connect → safe sign → concept cards → trusted resource → safety habits → `8/8 ready` → force-close/reopen → persistence confirmed. **Passed.**
 
 ---
 
@@ -136,9 +194,11 @@ This is **normal Android / emulator behavior** for `Linking.openURL` external in
 
 ---
 
-## Wallet QA — Mock MWA Wallet (2026-06-14)
+## Wallet QA — Mock MWA Wallet — **PASSED** (2026-06-14)
 
-Tested with official [Mock MWA Wallet](https://github.com/solana-mobile/mock-mwa-wallet) built from source and installed on `SeekerReady_Pixel7_API34`.
+Tested with official [Mock MWA Wallet](https://github.com/solana-mobile/mock-mwa-wallet) built from source and installed on `SeekerReady_Pixel7_API34`. Manual re-test after signature verification fix: **all wallet steps passed**.
+
+**Not production-equivalent:** Mock MWA Wallet does not replicate Seed Vault / Seeker hardware. **Real Seeker / Seed Vault device QA remains pending.**
 
 ### Mock wallet setup (this PC)
 
@@ -160,11 +220,12 @@ Tested with official [Mock MWA Wallet](https://github.com/solana-mobile/mock-mwa
 |---|-------|--------|-------|
 | W.1 | Connect wallet (MWA + `mwallet`) | **Pass** | MWA local association established; mock wallet **Connect** sheet approved |
 | W.2 | Shortened address display | **Pass** | `Connected: 3PMU...FLzP` |
-| W.3 | Connect step completion | **Pass** | Progress advanced (e.g. `1/8 ready` / `3/8 ready` with partial learning steps) |
-| W.4 | Safe sign-message prompt | **Partial** | Mock wallet sheet showed exact text: `I am testing wallet signing in Seeker Ready. This does not move funds.` |
-| W.5 | Local signature verification | **Blocked (manual)** | Automated `adb` runs hit `CancellationException` / biometric lockout (`Too many incorrect attempts`) before verification completed |
-| W.6 | Full `8/8` completion badge | **Blocked (manual)** | Requires successful sign step + remaining learning/self-check steps |
-| W.7 | Persistence after reload | **Not re-verified** | Connect step persistence expected per app design; re-test manually after sign pass |
+| W.3 | Connect step completion | **Pass** | Step marked complete after successful connection |
+| W.4 | Safe sign-message | **Pass** | Mock wallet sheet showed exact text: `I am testing wallet signing in Seeker Ready. This does not move funds.` |
+| W.5 | Local signature verification | **Pass** | Post-fix: raw 64-byte Ed25519 signature verified locally. UI: *Signature verified. This test did not move funds.* Pre-fix decode error resolved. |
+| W.6 | Safe signature step completion | **Pass** | Step marked complete only after verification succeeded |
+| W.7 | Persistence after restart | **Pass** | Force-close/reopen: full `8/8` state and badge retained |
+| W.8 | Full `8/8` completion badge | **Pass** | All 8 checklist steps complete; badge visible |
 
 ### Emulator wallet testing notes
 
@@ -173,6 +234,8 @@ Tested with official [Mock MWA Wallet](https://github.com/solana-mobile/mock-mwa
 - **Mock MWA ≠ production:** Does not replicate Seed Vault / Seeker hardware behavior. **Real Seeker/device QA remains pending.**
 
 ## Resume manual wallet QA
+
+Full emulator QA (**`8/8` + persistence**) **passed** on 2026-06-14. Use these steps only when re-running on a fresh emulator or after mock wallet reinstall.
 
 When you return to the emulator UI — **manual interaction only**. Do **not** automate biometric/PIN approval.
 
@@ -235,10 +298,9 @@ npm run lint:check
 | Field | Value |
 |-------|-------|
 | Tester | Manual (emulator) |
-| Date | 2026-06-14 (paused — sign/8/8 manual pending) |
+| Date | 2026-06-14 |
 | AVD | SeekerReady_Pixel7_API34 |
 | Non-wallet emulator QA | **Pass** |
-| Mock MWA connect on emulator | **Pass** (2026-06-14) |
-| Mock MWA sign + local verify + 8/8 | **Partial — manual follow-up** |
+| Full emulator QA (`8/8` + Mock MWA) | **Pass** — connect, sign, verify, learning steps, badge, persistence |
 | Real Seeker / Seed Vault device QA | **Pending** |
-| Notes | External browser has no app back button; use system navigation. Mock wallet clone at `F:\James\mock-mwa-wallet`. |
+| Notes | Pre-fix sign failure: MWA returned raw 64-byte Ed25519 signature; app expected off-chain envelope. Fixed in `execute-wallet-sign-message.tsx` without bypassing verification. Mock MWA is not production-equivalent. External browser has no app back button; use system navigation. Mock wallet clone at `F:\James\mock-mwa-wallet`. |
