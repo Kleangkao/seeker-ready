@@ -10,6 +10,13 @@ import { ReadinessUiPressable } from '@/features/readiness/ui/readiness-ui-press
 import { useTheme } from '@/features/shell/data-access/use-theme'
 import { ShellUiPage } from '@/features/shell/ui/shell-ui-page'
 import { ShellUiPageHeader } from '@/features/shell/ui/shell-ui-page-header'
+import {
+  SURFACE_BUTTON,
+  SURFACE_CARD,
+  TEXT_ON_GRADIENT_BODY,
+  TEXT_ON_SURFACE_MUTED,
+  TEXT_ON_SURFACE_TITLE,
+} from '@/features/shell/ui/shell-ui-surface-styles'
 import { ShellUiThemeSwitcher } from '@/features/shell/ui/shell-ui-theme-switcher'
 import packageJson from '../../../package.json'
 
@@ -30,35 +37,41 @@ export function SettingsFeatureEntry() {
         />
         <Link asChild href="/settings/cluster">
           <Pressable accessibilityRole="button">
-            <Card className="gap-2 p-5">
+            <Card className={`gap-2 p-5 ${SURFACE_CARD}`}>
               <View className="flex-row items-center gap-2">
                 <Ionicons color={tintColor} name="server-outline" size={22} />
-                <Card.Title className="flex-1 text-xl font-bold">Cluster</Card.Title>
+                <Card.Title className={`flex-1 text-xl font-bold ${TEXT_ON_SURFACE_TITLE}`}>
+                  Cluster
+                </Card.Title>
                 <Ionicons color={tintColor} name="chevron-forward" size={18} />
               </View>
-              <Card.Description className="leading-relaxed">
+              <Card.Description className={`leading-relaxed ${TEXT_ON_SURFACE_MUTED}`}>
                 RPC and wallet authorization target for development or workshops.
               </Card.Description>
             </Card>
           </Pressable>
         </Link>
         <ShellUiThemeSwitcher />
-        <Card className="gap-2 p-5">
-          <Card.Title className="text-xl font-bold">Testing without Seeker</Card.Title>
-          <Card.Description className="leading-relaxed">
+        <Card className={`gap-2 p-5 ${SURFACE_CARD}`}>
+          <Card.Title className={`text-xl font-bold ${TEXT_ON_SURFACE_TITLE}`}>
+            Testing without Seeker
+          </Card.Title>
+          <Card.Description className={`leading-relaxed ${TEXT_ON_SURFACE_MUTED}`}>
             Web preview can verify layout, learning steps, resources, safety habits, reset, and
             persistence. Wallet connect and signing require Android with an MWA-compatible wallet.
           </Card.Description>
         </Card>
-        <Card className="gap-3 p-5">
+        <Card className={`gap-3 p-5 ${SURFACE_CARD}`}>
           <View className="gap-1">
-            <Card.Title className="text-xl font-bold">Reset readiness</Card.Title>
-            <Card.Description className="leading-relaxed">
+            <Card.Title className={`text-xl font-bold ${TEXT_ON_SURFACE_TITLE}`}>
+              Reset readiness
+            </Card.Title>
+            <Card.Description className={`leading-relaxed ${TEXT_ON_SURFACE_MUTED}`}>
               Clear saved checklist progress on this device. Wallet connection is not stored.
             </Card.Description>
           </View>
           <ReadinessUiPressable
-            className="items-center rounded-xl border border-neutral-300 px-4 py-3 active:opacity-80 dark:border-neutral-700"
+            className={`items-center px-4 py-3 ${SURFACE_BUTTON}`}
             onPress={() => {
               resetReadinessProgress()
               toast.show({
@@ -70,13 +83,13 @@ export function SettingsFeatureEntry() {
               })
             }}
           >
-            <Text className="text-sm font-semibold text-neutral-900 dark:text-white">
+            <Text className={`text-sm font-semibold ${TEXT_ON_SURFACE_TITLE}`}>
               Reset checklist progress
             </Text>
           </ReadinessUiPressable>
         </Card>
       </View>
-      <Text className="w-full py-3 text-center text-muted">{`${appName} v${appVersion}`}</Text>
+      <Text className={`w-full py-3 text-center ${TEXT_ON_GRADIENT_BODY}`}>{`${appName} v${appVersion}`}</Text>
     </ShellUiPage>
   )
 }

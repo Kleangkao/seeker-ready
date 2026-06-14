@@ -8,6 +8,13 @@ import { SAFE_SIGN_MESSAGE } from '@/features/readiness/data-access/readiness-ty
 import { ReadinessUiPressable } from '@/features/readiness/ui/readiness-ui-pressable'
 import { ShellUiStatusAlert } from '@/features/shell/ui/shell-ui-status-alert'
 import {
+  SURFACE_BUTTON,
+  SURFACE_INNER,
+  TEXT_ON_SURFACE_BODY,
+  TEXT_ON_SURFACE_MUTED,
+  TEXT_ON_SURFACE_TITLE,
+} from '@/features/shell/ui/shell-ui-surface-styles'
+import {
   executeAndVerifyWalletSignMessage,
   WalletSignMessageVerificationError,
 } from '@/features/wallet/util/execute-wallet-sign-message'
@@ -42,7 +49,7 @@ export function ReadinessUiSignMessageStep({
 
   if (complete) {
     return (
-      <Text className="text-sm font-medium text-green-600 dark:text-green-400">
+      <Text className="text-sm font-medium text-green-300">
         Signature verified. This test did not move funds.
       </Text>
     )
@@ -50,10 +57,10 @@ export function ReadinessUiSignMessageStep({
 
   return (
     <View className="gap-3">
-      <View className="rounded-xl bg-neutral-100 p-3 dark:bg-neutral-900">
-        <Text className="text-sm leading-5 text-neutral-800 dark:text-neutral-200">{SAFE_SIGN_MESSAGE}</Text>
+      <View className={`p-3 ${SURFACE_INNER}`}>
+        <Text className={`text-sm leading-5 ${TEXT_ON_SURFACE_BODY}`}>{SAFE_SIGN_MESSAGE}</Text>
       </View>
-      <Text className="text-sm text-muted">
+      <Text className={`text-sm ${TEXT_ON_SURFACE_MUTED}`}>
         This test only proves your wallet can sign a message. It does not spend tokens or move funds.
       </Text>
       {isSuccess ? (
@@ -71,7 +78,7 @@ export function ReadinessUiSignMessageStep({
         />
       ) : null}
       <ReadinessUiPressable
-        className="items-center rounded-xl border border-neutral-300 px-4 py-3 dark:border-neutral-700"
+        className={`items-center px-4 py-3 ${SURFACE_BUTTON}`}
         onPress={async () => {
           if (Platform.OS === 'web') {
             setErrorMessage('Sign-message testing requires the Android development build with an active wallet connection.')
@@ -89,7 +96,7 @@ export function ReadinessUiSignMessageStep({
           }
         }}
       >
-        <Text className="text-sm font-semibold text-neutral-900 dark:text-white">
+        <Text className={`text-sm font-semibold ${TEXT_ON_SURFACE_TITLE}`}>
           {isPending ? 'Waiting for wallet...' : 'Test safe signature'}
         </Text>
       </ReadinessUiPressable>

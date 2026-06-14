@@ -16,10 +16,16 @@ import { ReadinessUiPreviewProgressHeader } from '@/features/readiness/ui/readin
 import { ReadinessUiProgressHeader } from '@/features/readiness/ui/readiness-ui-progress-header'
 import { ReadinessUiResourceLink } from '@/features/readiness/ui/readiness-ui-resource-link'
 import { ReadinessUiSafetyChecklist } from '@/features/readiness/ui/readiness-ui-safety-checklist'
+import { ReadinessUiSection } from '@/features/readiness/ui/readiness-ui-section'
 import { ReadinessUiSignMessageStep } from '@/features/readiness/ui/readiness-ui-sign-message-step'
 import { ReadinessUiPressable } from '@/features/readiness/ui/readiness-ui-pressable'
 import { ReadinessUiStepCard } from '@/features/readiness/ui/readiness-ui-step-card'
 import { ShellUiPage } from '@/features/shell/ui/shell-ui-page'
+import {
+  SURFACE_BUTTON,
+  TEXT_ON_SURFACE_MUTED,
+  TEXT_ON_SURFACE_TITLE,
+} from '@/features/shell/ui/shell-ui-surface-styles'
 import { WalletUiConnectButton } from '@/features/wallet/ui/wallet-ui-connect-button'
 
 export function ReadinessFeatureHome() {
@@ -34,6 +40,7 @@ export function ReadinessFeatureHome() {
     progress,
     toggleSafetyHabit,
     totalCount,
+    walletCompletedCount,
     walletTotalCount,
   } = useReadiness()
   const isWebPreview = Platform.OS === 'web'
@@ -49,7 +56,7 @@ export function ReadinessFeatureHome() {
   }, [account, isWebPreview, markStepComplete, progress.connectWallet])
 
   return (
-    <ShellUiPage contentClassName="gap-4 pb-6">
+    <ShellUiPage contentClassName="gap-5 pb-6">
       {isWebPreview ? (
         <>
           <ReadinessUiPreviewBanner />
@@ -65,123 +72,147 @@ export function ReadinessFeatureHome() {
 
       {isAllComplete && !isWebPreview ? <ReadinessUiCompletionBadge /> : null}
 
-      <Text className="text-sm leading-5 text-muted">
-        Wallet steps require real wallet interaction. Learning and safety steps are self-checks.
-      </Text>
-
-      <ReadinessUiStepCard
-        complete={isWebPreview ? false : isStepComplete('connectWallet')}
-        completeLabel={!isWebPreview && isStepComplete('connectWallet') ? 'Connected' : undefined}
-        description="Connect your mobile wallet through Mobile Wallet Adapter."
+      <ReadinessUiSection
+        description="Prove your wallet connects and can sign a harmless test message. These steps require a real MWA wallet — not available in web preview."
         icon="wallet-outline"
-        title="Connect wallet"
+        title="Wallet readiness"
       >
-        <View className="gap-3">
-          <Text className="text-sm text-muted">
-            {account
-              ? `Connected: ${ellipsify(account.address.toString())}`
-              : 'Not connected right now'}
-          </Text>
-          {account ? (
-            <ReadinessUiPressable
-              className="items-center rounded-xl border border-neutral-300 px-4 py-2 dark:border-neutral-700"
-              onPress={() => void disconnect()}
-            >
-              <Text className="text-sm font-semibold text-neutral-900 dark:text-white">Disconnect</Text>
-            </ReadinessUiPressable>
-          ) : (
-            <WalletUiConnectButton connect={connect} />
-          )}
-        </View>
-      </ReadinessUiStepCard>
-
-      <ReadinessUiStepCard
-        complete={isWebPreview ? false : isStepComplete('safeSignature')}
-        completeLabel={!isWebPreview && isStepComplete('safeSignature') ? 'Signed' : undefined}
-        description="Confirm your wallet can sign a harmless test message."
-        icon="create-outline"
-        title="Test safe signature"
-      >
-        {account ? (
-          <ReadinessUiSignMessageStep
-            complete={isWebPreview ? false : isStepComplete('safeSignature')}
-            signMessages={signMessages}
-            walletAddress={account.address}
-            onSuccess={() => markStepComplete('safeSignature')}
-          />
-        ) : (
-          <Text className="text-sm text-muted">
-            {Platform.OS === 'web'
-              ? 'Sign-message testing requires the Android development build with an active wallet connection.'
-              : isStepComplete('connectWallet')
-                ? 'Reconnect your wallet to run the signature test.'
-                : 'Connect your wallet first to run the signature test.'}
-          </Text>
-        )}
-      </ReadinessUiStepCard>
-
-      {READINESS_CONCEPTS.map((concept) => (
         <ReadinessUiStepCard
-          key={concept.step}
-          complete={isStepComplete(concept.step)}
-          completeLabel="Read"
-          description="Read the short explanation, then mark it as read."
-          icon="book-outline"
-          title={`Understand ${concept.title}`}
+          complete={isWebPreview ? false : isStepComplete('connectWallet')}
+          completeLabel={!isWebPreview && isStepComplete('connectWallet') ? 'Connected' : undefined}
+          description="Connect through Mobile Wallet Adapter. Your keys stay in your wallet app."
+          icon="wallet-outline"
+          title="Connect wallet"
         >
-          <ReadinessUiConceptCard
-            body={concept.body}
-            complete={isStepComplete(concept.step)}
-            onAcknowledge={() => markStepComplete(concept.step)}
-          />
+          <View className="gap-3">
+            <Text className={`text-sm ${TEXT_ON_SURFACE_MUTED}`}>
+              {account
+                ? `Connected: ${ellipsify(account.address.toString())}`
+                : 'Not connected right now'}
+            </Text>
+            {account ? (
+              <ReadinessUiPressable
+                className={`items-center px-4 py-2 ${SURFACE_BUTTON}`}
+                onPress={() => void disconnect()}
+              >
+                <Text className={`text-sm font-semibold ${TEXT_ON_SURFACE_TITLE}`}>Disconnect</Text>
+              </ReadinessUiPressable>
+            ) : (
+              <WalletUiConnectButton connect={connect} />
+            )}
+          </View>
         </ReadinessUiStepCard>
-      ))}
 
-      <ReadinessUiStepCard
-        complete={isStepComplete('trustedResources')}
-        completeLabel="Official resource opened"
-        description="Open at least one official resource before continuing."
-        icon="link-outline"
-        title="Open trusted resources"
-      >
-        <View className="gap-2">
-          {TRUSTED_RESOURCES.map((resource) => (
-            <ReadinessUiResourceLink
-              key={resource.url}
-              title={resource.title}
-              url={resource.url}
-              onOpen={() => markStepComplete('trustedResources')}
+        <ReadinessUiStepCard
+          complete={isWebPreview ? false : isStepComplete('safeSignature')}
+          completeLabel={!isWebPreview && isStepComplete('safeSignature') ? 'Verified' : undefined}
+          description="Sign a fixed test message locally verified in the app. No funds move."
+          icon="create-outline"
+          title="Test safe signature"
+        >
+          {account ? (
+            <ReadinessUiSignMessageStep
+              complete={isWebPreview ? false : isStepComplete('safeSignature')}
+              signMessages={signMessages}
+              walletAddress={account.address}
+              onSuccess={() => markStepComplete('safeSignature')}
             />
-          ))}
-        </View>
-        {isStepComplete('trustedResources') ? (
-          <Text className="text-sm font-medium text-green-600 dark:text-green-400">
-            Official resource opened
+          ) : (
+            <Text className={`text-sm ${TEXT_ON_SURFACE_MUTED}`}>
+              {Platform.OS === 'web'
+                ? 'Sign-message testing requires the Android development build with an active wallet connection.'
+                : isStepComplete('connectWallet')
+                  ? 'Reconnect your wallet to run the signature test.'
+                  : 'Connect your wallet first to run the signature test.'}
+            </Text>
+          )}
+        </ReadinessUiStepCard>
+
+        {!isWebPreview ? (
+          <Text className={`text-xs leading-5 ${TEXT_ON_SURFACE_MUTED}`}>
+            {walletCompletedCount}/{walletTotalCount} wallet steps complete
           </Text>
         ) : null}
-      </ReadinessUiStepCard>
+      </ReadinessUiSection>
 
-      <ReadinessUiStepCard
-        complete={isStepComplete('safetyHabits')}
-        completeLabel="Self-check complete"
-        description="Confirm the habits you want to follow before using new dApps."
-        icon="shield-outline"
-        title="Complete basic safety self-check"
+      <ReadinessUiSection
+        description="Short explanations of core Solana Mobile ideas. Read each card, then mark it when the key point makes sense."
+        icon="book-outline"
+        title="Learn the basics"
       >
-        <ReadinessUiSafetyChecklist
-          habits={SAFETY_HABITS}
-          values={progress.safetyHabits}
-          onToggle={toggleSafetyHabit}
-        />
-        {isStepComplete('safetyHabits') ? (
-          <Text className="text-sm font-medium text-green-600 dark:text-green-400">Self-check complete</Text>
-        ) : (
-          <Text className="text-sm text-muted">Check each habit you want to follow.</Text>
-        )}
-        <Text className="text-sm text-muted">
-          This is a personal readiness check, not a security scan.
-        </Text>
-      </ReadinessUiStepCard>
+        {READINESS_CONCEPTS.map((concept) => (
+          <ReadinessUiConceptCard
+            key={concept.step}
+            complete={isStepComplete(concept.step)}
+            icon={concept.icon}
+            remember={concept.remember}
+            summary={concept.summary}
+            title={concept.title}
+            whyItMatters={concept.whyItMatters}
+            onAcknowledge={() => markStepComplete(concept.step)}
+          />
+        ))}
+      </ReadinessUiSection>
+
+      <ReadinessUiSection
+        description="Know where to get official help and confirm habits you want to follow. These are self-checks — not a security scan."
+        icon="shield-outline"
+        title="Stay safe and get help"
+      >
+        <ReadinessUiStepCard
+          complete={isStepComplete('trustedResources')}
+          completeLabel="Link opened"
+          description="Bookmark official sources so you know where to look when something feels unclear."
+          icon="help-buoy-outline"
+          title="Official help resources"
+        >
+          <View className="gap-3">
+            {TRUSTED_RESOURCES.map((resource) => (
+              <ReadinessUiResourceLink
+                key={resource.url}
+                description={resource.description}
+                title={resource.title}
+                url={resource.url}
+                useWhen={resource.useWhen}
+                onOpen={() => markStepComplete('trustedResources')}
+              />
+            ))}
+            {isStepComplete('trustedResources') ? (
+              <Text className="text-sm font-medium text-green-300">
+                At least one official resource opened
+              </Text>
+            ) : (
+              <Text className={`text-sm ${TEXT_ON_SURFACE_MUTED}`}>
+                Open any link above — you do not need to read the whole site.
+              </Text>
+            )}
+          </View>
+        </ReadinessUiStepCard>
+
+        <ReadinessUiStepCard
+          complete={isStepComplete('safetyHabits')}
+          completeLabel="Self-check done"
+          description="Tap the habits you plan to follow before using new dApps."
+          icon="checkbox-outline"
+          title="Safety self-check"
+        >
+          <ReadinessUiSafetyChecklist
+            habits={SAFETY_HABITS}
+            values={progress.safetyHabits}
+            onToggle={toggleSafetyHabit}
+          />
+          {isStepComplete('safetyHabits') ? (
+            <Text className="text-sm font-medium text-green-300">
+              Self-check complete
+            </Text>
+          ) : (
+            <Text className={`text-sm ${TEXT_ON_SURFACE_MUTED}`}>Check each habit you want to follow.</Text>
+          )}
+          <Text className={`text-sm ${TEXT_ON_SURFACE_MUTED}`}>
+            This is a personal readiness check, not a security scan or wallet audit.
+          </Text>
+        </ReadinessUiStepCard>
+      </ReadinessUiSection>
     </ShellUiPage>
   )
 }

@@ -2,6 +2,11 @@ import Ionicons from '@expo/vector-icons/Ionicons'
 import type { ComponentProps, ReactNode } from 'react'
 import { Text, View } from 'react-native'
 
+import {
+  TEXT_ON_GRADIENT_BODY,
+  TEXT_ON_GRADIENT_TITLE,
+} from '@/features/shell/ui/shell-ui-surface-styles'
+
 export function ShellUiPageHeader({
   description = null,
   icon = null,
@@ -15,10 +20,10 @@ export function ShellUiPageHeader({
     <View className="gap-2">
       <View className="flex-row items-center gap-3">
         {icon}
-        <Text className="flex-1 text-3xl font-semibold text-neutral-900 dark:text-white">{title}</Text>
+        <Text className={`flex-1 text-3xl font-semibold ${TEXT_ON_GRADIENT_TITLE}`}>{title}</Text>
       </View>
       {typeof description === 'string' ? (
-        <Text className="text-base leading-6 text-neutral-600 dark:text-neutral-300">{description}</Text>
+        <Text className={`text-base leading-6 ${TEXT_ON_GRADIENT_BODY}`}>{description}</Text>
       ) : (
         description
       )}

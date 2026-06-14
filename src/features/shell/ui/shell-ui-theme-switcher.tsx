@@ -5,8 +5,13 @@ import { Pressable, Text, View } from 'react-native'
 
 import type { Theme } from '@/features/shell/data-access/use-theme'
 import { setTheme, useTheme } from '@/features/shell/data-access/use-theme'
+import {
+  SURFACE_CARD,
+  SURFACE_ICON,
+  TEXT_ON_SURFACE_MUTED,
+} from '@/features/shell/ui/shell-ui-surface-styles'
 
-type ThemeIcon = ComponentProps<typeof Ionicons>['name']
+type ThemeIcon = ComponentProps<typeof import('@expo/vector-icons/Ionicons').default>['name']
 
 const themeIcons: Record<Theme, ThemeIcon> = {
   dark: 'moon-outline',
@@ -18,7 +23,7 @@ export function ShellUiThemeSwitcher() {
   const { activeTheme, themes } = useTheme()
 
   return (
-    <View className="flex-row rounded-2xl border border-neutral-200 bg-neutral-100 p-1 dark:border-neutral-800 dark:bg-neutral-950">
+    <View className={cn('flex-row p-1', SURFACE_CARD)}>
       {themes.map((theme) => {
         const isSelected = activeTheme === theme.name
 
@@ -47,7 +52,7 @@ function ThemeSwitcherItem({
   label: string
   onPress(): void
 }) {
-  const color = isSelected ? '#208AEF' : '#737373'
+  const color = isSelected ? '#208AEF' : 'rgba(255,255,255,0.55)'
 
   return (
     <Pressable
@@ -55,7 +60,7 @@ function ThemeSwitcherItem({
       accessibilityState={{ selected: isSelected }}
       className={cn(
         'min-h-16 flex-1 items-center justify-center gap-1 rounded-xl px-2 py-2',
-        isSelected ? 'bg-white dark:bg-neutral-900' : 'bg-transparent',
+        isSelected ? SURFACE_ICON : 'bg-transparent',
       )}
       onPress={onPress}
     >
@@ -63,7 +68,7 @@ function ThemeSwitcherItem({
       <Text
         className={cn(
           'text-sm font-semibold',
-          isSelected ? 'text-blue-600 dark:text-blue-300' : 'text-neutral-600 dark:text-neutral-300',
+          isSelected ? 'text-blue-300' : TEXT_ON_SURFACE_MUTED,
         )}
       >
         {label}

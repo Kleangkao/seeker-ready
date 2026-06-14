@@ -10,6 +10,11 @@ import { useAppCluster } from '@/features/cluster/data-access/cluster-provider'
 import { AppClusterSwitcher } from '@/features/core/ui/app-cluster-switcher'
 import { useTheme } from '@/features/shell/data-access/use-theme'
 import { ShellUiPage } from '@/features/shell/ui/shell-ui-page'
+import {
+  SURFACE_CARD,
+  TEXT_ON_SURFACE_MUTED,
+  TEXT_ON_SURFACE_TITLE,
+} from '@/features/shell/ui/shell-ui-surface-styles'
 
 export function SettingsFeatureCluster() {
   const { cluster, clusters, resetClusters, updateClusterUrl } = useAppCluster()
@@ -22,13 +27,15 @@ export function SettingsFeatureCluster() {
 
   return (
     <ShellUiPage>
-      <Card className="gap-4 p-5">
+      <Card className={`gap-4 p-5 ${SURFACE_CARD}`}>
         <Card.Body className="gap-1">
           <View className="flex-row items-center gap-2">
             <Ionicons color={tintColor} name="server-outline" size={22} />
-            <Card.Title className="text-xl font-bold">Cluster</Card.Title>
+            <Card.Title className={`text-xl font-bold ${TEXT_ON_SURFACE_TITLE}`}>Cluster</Card.Title>
           </View>
-          <Card.Description className="leading-relaxed">RPC and wallet authorization target.</Card.Description>
+          <Card.Description className={`leading-relaxed ${TEXT_ON_SURFACE_MUTED}`}>
+            RPC and wallet authorization target.
+          </Card.Description>
         </Card.Body>
         <AppClusterSwitcher
           onSelectCluster={(clusterId) => {
@@ -39,13 +46,15 @@ export function SettingsFeatureCluster() {
         />
       </Card>
       {selectedCluster ? (
-        <Card className="gap-4 p-5">
+        <Card className={`gap-4 p-5 ${SURFACE_CARD}`}>
           <Card.Body className="gap-1">
             <View className="flex-row items-center gap-2">
               <Ionicons color={tintColor} name="link-outline" size={22} />
-              <Card.Title className="text-xl font-bold">{selectedCluster.label} URL</Card.Title>
+              <Card.Title className={`text-xl font-bold ${TEXT_ON_SURFACE_TITLE}`}>
+                {selectedCluster.label} URL
+              </Card.Title>
             </View>
-            <Card.Description className="leading-relaxed">
+            <Card.Description className={`leading-relaxed ${TEXT_ON_SURFACE_MUTED}`}>
               Leave the URL empty to keep this cluster visible but disabled.
             </Card.Description>
           </Card.Body>
@@ -62,7 +71,7 @@ export function SettingsFeatureCluster() {
             placeholder="RPC URL"
             value={url}
           />
-          {status ? <Text className="text-sm text-neutral-600 dark:text-neutral-300">{status}</Text> : null}
+          {status ? <Text className={`text-sm ${TEXT_ON_SURFACE_MUTED}`}>{status}</Text> : null}
           <View className="gap-3">
             <Button
               variant="outline"

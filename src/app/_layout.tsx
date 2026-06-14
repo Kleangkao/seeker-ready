@@ -4,6 +4,7 @@ import Ionicons from '@expo/vector-icons/Ionicons'
 import { Tabs } from 'expo-router/js-tabs'
 import { AppProviders } from '@/features/core/data-access/app-providers'
 import { useTheme } from '@/features/shell/data-access/use-theme'
+import { APP_GRADIENT_BOTTOM } from '@/features/shell/ui/shell-ui-gradient.constants'
 
 export default function Layout() {
   return (
@@ -14,19 +15,19 @@ export default function Layout() {
 }
 
 function AppTabs() {
-  const { backgroundColor, isDark, mutedColor, tintColor } = useTheme()
+  const { tintColor } = useTheme()
 
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        sceneStyle: { backgroundColor },
+        sceneStyle: { backgroundColor: APP_GRADIENT_BOTTOM },
         tabBarActiveTintColor: tintColor,
         tabBarHideOnKeyboard: true,
-        tabBarInactiveTintColor: mutedColor,
+        tabBarInactiveTintColor: 'rgba(255,255,255,0.55)',
         tabBarStyle: {
-          backgroundColor,
-          borderTopColor: isDark ? '#1F2937' : '#E5E7EB',
+          backgroundColor: APP_GRADIENT_BOTTOM,
+          borderTopColor: 'rgba(255,255,255,0.12)',
         },
       }}
     >
