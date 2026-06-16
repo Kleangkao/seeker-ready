@@ -5,6 +5,7 @@ import { Card } from 'heroui-native/card'
 import { useToast } from 'heroui-native/toast'
 import { Pressable, Text, View } from 'react-native'
 
+import { SEEKER_READY_TAGLINE } from '@/features/readiness/data-access/readiness-types'
 import { resetReadinessProgress } from '@/features/readiness/data-access/readiness-store'
 import { ReadinessUiPressable } from '@/features/readiness/ui/readiness-ui-pressable'
 import { useTheme } from '@/features/shell/data-access/use-theme'
@@ -32,7 +33,7 @@ export function SettingsFeatureEntry() {
     <ShellUiPage contentClassName="flex-1 justify-between gap-0">
       <View className="gap-6">
         <ShellUiPageHeader
-          description="Post-unboxing readiness check for Solana Mobile users"
+          description={SEEKER_READY_TAGLINE}
           title="Settings"
         />
         <Link asChild href="/settings/cluster">

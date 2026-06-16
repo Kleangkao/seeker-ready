@@ -17,7 +17,7 @@
     "web": "expo start --web"
   },
   "displayName": "Seeker Ready",
-  "description": "Post-unboxing readiness check for Solana Mobile users.",
+  "description": "A quick readiness check for Solana Mobile users.",
   "usecase": "Mobile",
   "keywords": [
     "seeker-ready",

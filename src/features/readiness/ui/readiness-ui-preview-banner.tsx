@@ -14,8 +14,8 @@ export function ReadinessUiPreviewBanner() {
         <Text className={`text-sm font-semibold ${TEXT_ON_SURFACE_TITLE}`}>Preview mode</Text>
       </View>
       <Text className={`text-sm leading-5 ${TEXT_ON_SURFACE_BODY}`}>
-        You can review the learning and safety steps here. Wallet connect and signing require Android
-        with an MWA-compatible wallet.
+        Review the basics here. Wallet connection and signing work on Android with an MWA-compatible
+        wallet.
       </Text>
     </View>
   )

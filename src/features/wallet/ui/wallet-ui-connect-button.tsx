@@ -42,7 +42,7 @@ function isWalletConnectionCanceled(error: unknown) {
 }
 
 export function WalletUiConnectButton({
-  children = 'Connect Wallet',
+  children = 'Connect wallet',
   connect,
   size,
 }: PropsWithChildren<{ connect: () => Promise<unknown>; size?: 'sm' | 'md' | 'lg' }>) {

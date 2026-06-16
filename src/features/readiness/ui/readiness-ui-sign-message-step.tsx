@@ -97,7 +97,7 @@ export function ReadinessUiSignMessageStep({
         }}
       >
         <Text className={`text-sm font-semibold ${TEXT_ON_SURFACE_TITLE}`}>
-          {isPending ? 'Waiting for wallet...' : 'Test safe signature'}
+          {isPending ? 'Waiting for wallet...' : 'Sign test message'}
         </Text>
       </ReadinessUiPressable>
     </View>
