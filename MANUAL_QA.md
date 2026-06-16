@@ -4,7 +4,9 @@ Use this checklist on an **Android custom Expo development build** with a **comp
 
 **Do not use Expo Go** for this pass. MWA connect and sign-message require native wallet integration.
 
-> **No Android device?** Start with [NO_DEVICE_QA.md](./NO_DEVICE_QA.md) for Web/static checks.
+> **Web browser wallet testing?** Use [NO_DEVICE_QA.md](./NO_DEVICE_QA.md) Section D (Phantom / Solflare). Web completion is **Browser wallet readiness complete** — it does not validate Seeker, Seed Vault, or production MWA.
+>
+> **No Android device?** Start with [NO_DEVICE_QA.md](./NO_DEVICE_QA.md) for web and static checks.
 >
 > **Android Emulator (non-wallet)?** See [EMULATOR_QA.md](./EMULATOR_QA.md) — learning steps, persistence, and reset **passed** on `SeekerReady_Pixel7_API34`.
 >
@@ -118,7 +120,7 @@ Full manual pass on Android Emulator (`SeekerReady_Pixel7_API34`, `com.solana.mw
 | 5.1 | Tap **Got it** on each concept card | MWA, Seed Vault, dApp Store, Seeker ID steps complete | [x] emulator |
 | 5.2 | Tap any trusted resource link | External browser opens official URL | [x] emulator |
 | 5.3 | Return to app | **Open trusted resources** step complete | [x] emulator |
-| 5.4 | Check all 5 safety habit items | Each toggles on tap | [x] emulator |
+| 5.4 | Check all **6** safety habit items | Each toggles on tap | [x] emulator |
 | 5.5 | Complete all habits | **Complete basic safety habits** step shows complete | [x] emulator |
 | 5.6 | Reload app | Concept, resource, and safety progress persists | [x] emulator |
 
@@ -131,7 +133,7 @@ Full manual pass on Android Emulator (`SeekerReady_Pixel7_API34`, `com.solana.mw
 | # | Step | Expected | Pass |
 |---|------|----------|------|
 | 6.1 | Complete all 8 checklist steps | Progress shows `8/8 ready` | [x] emulator |
-| 6.2 | Confirm completion badge | **Seeker Ready** badge visible with subtitle | [x] emulator |
+| 6.2 | Confirm completion badge | **Seeker Ready** badge visible with subtitle (not web browser-wallet wording) | [x] emulator |
 | 6.3 | Force-close and reopen app (wallet may be disconnected) | Completion badge still visible | [x] emulator |
 | 6.4 | Confirm progress header | Still shows `8/8 ready` | [x] emulator |
 
@@ -182,4 +184,5 @@ Full manual pass on Android Emulator (`SeekerReady_Pixel7_API34`, `com.solana.mw
 - Reset clears persisted progress; reconnecting may immediately re-complete connect wallet via MWA observation.
 - **External resource links** open the system browser on Android. The emulator browser has no dedicated “back to app” button — use Android Back, Recents, or reopen Seeker Ready. Normal platform behavior; no app change required for MVP (see [EMULATOR_QA.md](./EMULATOR_QA.md)).
 - **Mock MWA Wallet on emulator** requires screen lock + **Authenticate** in `mwallet` before connect/sign. Sign uses biometric approval; **do not automate** PIN/biometric taps (lockout risk). Resume steps: [EMULATOR_QA.md](./EMULATOR_QA.md#resume-manual-wallet-qa). Mock wallet is not production-equivalent to Seed Vault / Seeker hardware.
+- **Web vs Android:** Browser wallet testing on web is documented in [NO_DEVICE_QA.md](./NO_DEVICE_QA.md) Section D. This manual pass remains the source of truth for **Android MWA** and Seeker / Seed Vault confidence.
 - **MWA `sign_messages` return shape:** Wallets may return a raw 64-byte Ed25519 signature (not a Solana off-chain message envelope). Seeker Ready verifies both shapes locally. Pre-2026-06-14 builds only accepted envelopes and showed *Could not decode the signed message* with Mock MWA Wallet; fixed in `execute-wallet-sign-message.tsx` without bypassing verification. Emulator re-test **passed** 2026-06-14.

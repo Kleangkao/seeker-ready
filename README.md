@@ -4,44 +4,52 @@ Post-unboxing readiness companion for Solana Mobile users.
 
 Seeker Ready helps new Seeker users, workshop participants, and Solana Mobile builders work through a short checklist before they start using real dApps — connect a wallet, try a safe signature test, read short concept cards, open trusted resources, and confirm basic safety habits.
 
-**This is not official Seeker onboarding.** It is a practical readiness companion and workshop-friendly setup checker. It does not verify Seeker Genesis Token (SGT) ownership, run scanners, offer rewards, or replace Solana Mobile documentation.
+**This is not official Seeker onboarding.** It is a practical readiness companion and workshop-friendly setup checker. It does not verify Seeker Genesis Token (SGT) ownership, run scanners, offer rewards, certify device security, or replace Solana Mobile documentation.
 
 ## What it does
 
-- Shows a readiness checklist as the first screen (`x/8 ready` on device)
-- Connects a wallet through Mobile Wallet Adapter (MWA) on Android
-- Runs a safe sign-message test with local signature verification (no funds moved)
+- Shows a readiness checklist as the first screen (`x/8 ready`)
+- **Android / native:** connects a wallet through Mobile Wallet Adapter (MWA)
+- **Web:** connects Phantom or Solflare as browser wallets for readiness testing
+- Runs a **safe sign-message test only** with local signature verification (no transactions, no SOL spent)
 - Explains key Solana Mobile concepts in short self-check cards
 - Links to trusted official resources
 - Tracks basic safety habits and local checklist progress
-- Shows a **Seeker Ready** completion state when all steps are genuinely complete
+- Shows a completion state when all steps are genuinely complete:
+  - **Android / native:** **Seeker Ready**
+  - **Web:** **Browser wallet readiness complete** (not the same as full Seeker device readiness)
 
-## Web preview vs Android testing
+## Web vs Android testing
+
+Browser wallet mode on web is **not** the same as Android Mobile Wallet Adapter. Web does not prove Seed Vault, Seeker hardware, or production MWA behavior.
 
 | Environment | What you can test |
 |-------------|-------------------|
-| **Web preview** | Layout, navigation, learning steps (6/6 self-check), trusted resources, safety habits, reset, and persistence |
-| **Android + MWA wallet** | Real wallet connect, safe sign-message, local signature verification, and full `8/8` completion |
+| **Web (browser)** | Full `8/8` checklist with Phantom or Solflare: browser wallet connect, safe sign-message, concept cards, trusted resources, safety habits, reset, and local persistence. Completion means **browser wallet readiness**, not Seeker device readiness. |
+| **Android + MWA wallet** | Real MWA connect, safe sign-message, local signature verification, full `8/8` completion as **Seeker Ready**, and validation closer to Seeker / Seed Vault / production MWA behavior |
 
-Web preview activates automatically and shows **Learning steps: x/6** plus **Wallet ready: 0/2 — requires Android + MWA**. Wallet connect and sign-message **cannot be fully verified on web** — those steps require Android with an MWA-compatible wallet. Web preview does not mock wallet behavior or show a fake completion badge.
+Real Seeker, Seed Vault, and production MWA confidence still requires Android device testing — see [MANUAL_QA.md](./MANUAL_QA.md).
+
+Web wallet QA checklist: [NO_DEVICE_QA.md](./NO_DEVICE_QA.md#section-d--web-browser-wallet-qa).
 
 ## QA status
 
 | Pass | Status |
 |------|--------|
 | Static review (types, lint, scope) | Passed |
-| Web / no-device QA | Passed — see [NO_DEVICE_QA.md](./NO_DEVICE_QA.md) |
-| Android + MWA device QA | **Pending** — see [MANUAL_QA.md](./MANUAL_QA.md) |
+| Web / no-device QA (UI, static, browser wallet checklist) | See [NO_DEVICE_QA.md](./NO_DEVICE_QA.md) |
+| Android + MWA device QA (Seeker / Seed Vault / production MWA) | **Pending** — see [MANUAL_QA.md](./MANUAL_QA.md) |
+| Emulator + Mock MWA | **Passed** `8/8` (2026-06-14) — not production-equivalent |
 
-**Summary:** Static + web/no-device QA has passed. Android/MWA device QA is still pending before release.
+**Summary:** Code supports both web browser wallets and Android MWA. Emulator MWA passed with Mock MWA Wallet. Real Seeker / Seed Vault device QA is still pending before release.
 
 ## Get started
 
 ### Requirements
 
-- **Custom Expo development build required** — not intended for plain Expo Go.
-- **Android device** with a compatible Mobile Wallet Adapter (MWA) wallet for real wallet testing.
-- Web preview is optional and limited to learning/safety/resource QA.
+- **Custom Expo development build** on Android — not intended for plain Expo Go.
+- **Android device** with a compatible MWA wallet for Seeker / MWA validation.
+- **Web:** Chrome or another desktop browser with the **Phantom** and/or **Solflare** extension for browser wallet testing (optional; no Android required for that path).
 
 ### Run locally
 
@@ -51,13 +59,15 @@ Web preview activates automatically and shows **Learning steps: x/6** plus **Wal
    npm install --legacy-peer-deps
    ```
 
-2. Web preview (learning/safety QA only)
+2. Web (browser wallet + full checklist)
 
    ```bash
    npm run web
    ```
 
-3. Android dev client + device testing
+   Open the local URL, install Phantom and/or Solflare if needed, then use **Connect wallet** on the Ready tab.
+
+3. Android dev client + MWA testing
 
    ```bash
    npm run dev
@@ -78,36 +88,40 @@ npm run optimize:assets
 
 **Included:**
 
-- Readiness checklist with progress (`x/8 ready` on device)
-- Wallet connect via MWA (Android)
-- Safe sign-message test with local signature verification
+- Readiness checklist with progress (`x/8 ready`)
+- Wallet connect via MWA on Android / native
+- Browser wallet connect on web (Phantom and Solflare)
+- Safe sign-message test with local signature verification (no on-chain transactions)
 - Short concept cards (MWA, Seed Vault, dApp Store, Seeker ID)
 - Trusted resource links (open at least one)
 - Basic safety self-check habits
-- Local MMKV-backed progress persistence
-- Web preview mode for no-device QA
-- Completion badge when all steps are genuinely complete
+- Local progress persistence (MMKV on native, `localStorage` on web)
+- Platform-honest completion badge
 
 **Not included:**
 
 - Official Solana Mobile onboarding
 - SGT / Seeker ownership verification
+- Seed Vault verification on web
 - Token or address scanners
 - Safety Lens / scam or risk detection
 - Rewards or claim systems
 - Backend Sign-In With Solana (SIWS)
+- On-chain transactions or SOL spends
 - Mock wallet or fake signature flows
 - Curated dApp recommendations
+- Production security certification
 
 ## Screenshots / walkthrough
 
 | Screen | Status | Notes |
 |--------|--------|-------|
-| Web preview banner | Ready to capture now | Preview mode + split Learning 6/6 / Wallet 0/2 |
-| Ready checklist | Ready to capture now | Full step list with honest self-check wording |
-| Learning 6/6 | Ready to capture now | Concept cards marked **Read**, resources and safety complete |
-| Settings | Ready to capture now | Theme, cluster, reset, and **Testing without Seeker** card |
-| Android wallet flow | **Pending device QA** | Capture after Android + MWA QA passes — connect wallet + signature verified |
+| Ready checklist (web) | Ready to capture | Unified `x/8` progress; Connect wallet opens browser wallet modal |
+| Browser wallet modal | Ready to capture | Phantom / Solflare logos with Connect or Install |
+| Web completion badge | Ready to capture | **Browser wallet readiness complete** |
+| Ready checklist (Android) | Ready to capture | MWA connect + sign-message flow |
+| Android completion badge | **Pending real device QA** | **Seeker Ready** after `8/8` on Seeker / Seed Vault |
+| Settings | Ready to capture | Theme, cluster, reset, testing guidance |
 
 ## App identity
 
@@ -129,5 +143,6 @@ npm run optimize:assets
 
 - [Solana Mobile documentation](https://docs.solanamobile.com/)
 - [Expo documentation](https://docs.expo.dev/)
-- [NO_DEVICE_QA.md](./NO_DEVICE_QA.md) — web/static QA
+- [NO_DEVICE_QA.md](./NO_DEVICE_QA.md) — web, static, and browser wallet QA
 - [MANUAL_QA.md](./MANUAL_QA.md) — Android + MWA QA
+- [EMULATOR_QA.md](./EMULATOR_QA.md) — emulator and Mock MWA notes

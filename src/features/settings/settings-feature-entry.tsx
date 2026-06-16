@@ -58,8 +58,10 @@ export function SettingsFeatureEntry() {
             Testing without Seeker
           </Card.Title>
           <Card.Description className={`leading-relaxed ${TEXT_ON_SURFACE_MUTED}`}>
-            Web preview can verify layout, learning steps, resources, safety habits, reset, and
-            persistence. Wallet connect and signing require Android with an MWA-compatible wallet.
+            On web, you can test browser wallet connect and safe sign-message with Phantom or Solflare,
+            plus layout, learning steps, resources, safety habits, reset, and persistence. Android is
+            still required for Mobile Wallet Adapter, Seeker device, and Seed Vault validation — web
+            browser wallet testing does not replace real Android MWA testing.
           </Card.Description>
         </Card>
         <Card className={`gap-3 p-5 ${SURFACE_CARD}`}>
