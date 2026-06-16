@@ -1,6 +1,6 @@
 import { useToast } from 'heroui-native/toast'
 import { cn } from 'heroui-native/utils'
-import { Platform, Text } from 'react-native'
+import { Text } from 'react-native'
 import type { PropsWithChildren } from 'react'
 
 import { ReadinessUiPressable } from '@/features/readiness/ui/readiness-ui-pressable'
@@ -37,7 +37,9 @@ function isWalletConnectionCanceled(error: unknown) {
     code === 'ERROR_ASSOCIATION_CANCELLED' ||
     code === 'Session not established: Local association cancelled by user' ||
     message.includes('CancellationException') ||
-    message.includes('Local association cancelled by user')
+    message.includes('Local association cancelled by user') ||
+    message.includes('User rejected') ||
+    message.includes('rejected the request')
   )
 }
 
@@ -51,17 +53,6 @@ export function WalletUiConnectButton({
   const isSmall = size === 'sm'
 
   async function handleConnect() {
-    if (Platform.OS === 'web') {
-      toast.show({
-        description: 'Wallet connection requires the Android development build with Mobile Wallet Adapter.',
-        id: WALLET_CONNECT_TOAST_ID,
-        label: 'Not available on web',
-        placement: 'bottom',
-        variant: 'warning',
-      })
-      return
-    }
-
     try {
       toast.hide(WALLET_CONNECT_TOAST_ID)
       await connect()

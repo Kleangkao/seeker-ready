@@ -1,8 +1,8 @@
 import type { Address } from '@solana/kit'
 import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
-import { Platform, Text, View } from 'react-native'
-import type { useMobileWallet } from '@wallet-ui/react-native-kit'
+import { Text, View } from 'react-native'
+import type { WalletSignMessages } from '@/features/wallet/data-access/wallet-sign-message-types'
 
 import { SAFE_SIGN_MESSAGE } from '@/features/readiness/data-access/readiness-types'
 import { ReadinessUiPressable } from '@/features/readiness/ui/readiness-ui-pressable'
@@ -20,6 +20,23 @@ import {
 } from '@/features/wallet/util/execute-wallet-sign-message'
 import { formatError } from '@/features/wallet/util/format-error'
 
+function isSignRequestCanceled(error: unknown) {
+  const message =
+    error instanceof Error
+      ? error.message
+      : error !== null && typeof error === 'object' && 'message' in error
+        ? String(error.message)
+        : typeof error === 'string'
+          ? error
+          : ''
+
+  return (
+    message.includes('User rejected') ||
+    message.includes('rejected the request') ||
+    message.includes('Request rejected')
+  )
+}
+
 export function ReadinessUiSignMessageStep({
   complete,
   onSuccess,
@@ -28,7 +45,7 @@ export function ReadinessUiSignMessageStep({
 }: {
   complete: boolean
   onSuccess(): void
-  signMessages: ReturnType<typeof useMobileWallet>['signMessages']
+  signMessages: WalletSignMessages
   walletAddress: Address
 }) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -80,19 +97,17 @@ export function ReadinessUiSignMessageStep({
       <ReadinessUiPressable
         className={`items-center px-4 py-3 ${SURFACE_BUTTON}`}
         onPress={async () => {
-          if (Platform.OS === 'web') {
-            setErrorMessage('Sign-message testing requires the Android development build with an active wallet connection.')
-            setVerificationFailed(false)
-            return
-          }
-
           try {
             setErrorMessage(null)
             setVerificationFailed(false)
             await mutateAsync()
           } catch (error) {
             setVerificationFailed(error instanceof WalletSignMessageVerificationError)
-            setErrorMessage(formatError(error))
+            setErrorMessage(
+              isSignRequestCanceled(error)
+                ? 'The signing request was dismissed before it completed.'
+                : formatError(error),
+            )
           }
         }}
       >

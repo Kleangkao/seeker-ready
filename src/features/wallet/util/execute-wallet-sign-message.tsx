@@ -10,7 +10,7 @@ import {
   verifyOffchainMessageEnvelope,
   verifySignature,
 } from '@solana/kit'
-import type { useMobileWallet } from '@wallet-ui/react-native-kit'
+import type { WalletSignMessages } from '@/features/wallet/data-access/wallet-sign-message-types'
 
 const ED25519_SIGNATURE_LENGTH = 64
 
@@ -162,7 +162,7 @@ export async function executeAndVerifyWalletSignMessage({
   walletAddress,
 }: {
   expectedMessage: string
-  signMessages: ReturnType<typeof useMobileWallet>['signMessages']
+  signMessages: WalletSignMessages
   walletAddress: Address
 }) {
   const messageBytes = new TextEncoder().encode(expectedMessage)

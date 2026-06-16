@@ -1,6 +1,5 @@
-import { useMobileWallet } from '@wallet-ui/react-native-kit'
 import { useEffect } from 'react'
-import { Platform, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 
 import { useReadiness } from '@/features/readiness/data-access/use-readiness'
 import {
@@ -11,8 +10,6 @@ import {
 import { ellipsify } from '@/features/readiness/util/ellipsify'
 import { ReadinessUiCompletionBadge } from '@/features/readiness/ui/readiness-ui-completion-badge'
 import { ReadinessUiConceptCard } from '@/features/readiness/ui/readiness-ui-concept-card'
-import { ReadinessUiPreviewBanner } from '@/features/readiness/ui/readiness-ui-preview-banner'
-import { ReadinessUiPreviewProgressHeader } from '@/features/readiness/ui/readiness-ui-preview-progress-header'
 import { ReadinessUiProgressHeader } from '@/features/readiness/ui/readiness-ui-progress-header'
 import { ReadinessUiResourceLink } from '@/features/readiness/ui/readiness-ui-resource-link'
 import { ReadinessUiSafetyChecklist } from '@/features/readiness/ui/readiness-ui-safety-checklist'
@@ -26,16 +23,17 @@ import {
   TEXT_ON_SURFACE_MUTED,
   TEXT_ON_SURFACE_TITLE,
 } from '@/features/shell/ui/shell-ui-surface-styles'
+import { useAppWallet } from '@/features/wallet/data-access/use-app-wallet'
+import { WalletUiBrowserConnect } from '@/features/wallet/ui/wallet-ui-browser-connect'
 import { WalletUiConnectButton } from '@/features/wallet/ui/wallet-ui-connect-button'
 
 export function ReadinessFeatureHome() {
-  const { account, connect, disconnect, signMessages } = useMobileWallet()
+  const { account, connect, connectedWalletLabel, disconnect, isBrowserWallet, signMessages } =
+    useAppWallet()
   const {
     completedCount,
     isAllComplete,
     isStepComplete,
-    learningCompletedCount,
-    learningTotalCount,
     markStepComplete,
     progress,
     toggleSafetyHabit,
@@ -43,51 +41,40 @@ export function ReadinessFeatureHome() {
     walletCompletedCount,
     walletTotalCount,
   } = useReadiness()
-  const isWebPreview = Platform.OS === 'web'
-
   useEffect(() => {
-    if (isWebPreview) {
-      return
-    }
-
     if (account && !progress.connectWallet) {
       markStepComplete('connectWallet')
     }
-  }, [account, isWebPreview, markStepComplete, progress.connectWallet])
+  }, [account, markStepComplete, progress.connectWallet])
+
+  const walletSectionDescription = isBrowserWallet
+    ? 'Connect Phantom or Solflare in your browser. For Seeker or Mobile Wallet Adapter testing, use the Android app.'
+    : 'Requires Android and Mobile Wallet Adapter.'
+
+  const connectWalletDescription = isBrowserWallet
+    ? 'Choose a browser wallet extension or in-app browser. Your private keys stay inside your wallet.'
+    : 'Connect with Mobile Wallet Adapter. Your private keys stay inside your wallet app.'
 
   return (
     <ShellUiPage contentClassName="gap-5 pb-6">
-      {isWebPreview ? (
-        <>
-          <ReadinessUiPreviewBanner />
-          <ReadinessUiPreviewProgressHeader
-            learningCompletedCount={learningCompletedCount}
-            learningTotalCount={learningTotalCount}
-            walletTotalCount={walletTotalCount}
-          />
-        </>
-      ) : (
-        <ReadinessUiProgressHeader completedCount={completedCount} totalCount={totalCount} />
-      )}
+      <ReadinessUiProgressHeader completedCount={completedCount} totalCount={totalCount} />
 
-      {isAllComplete && !isWebPreview ? <ReadinessUiCompletionBadge /> : null}
+      {isAllComplete ? <ReadinessUiCompletionBadge /> : null}
 
-      <ReadinessUiSection
-        description="Requires Android and Mobile Wallet Adapter."
-        icon="wallet-outline"
-        title="Wallet readiness"
-      >
+      <ReadinessUiSection description={walletSectionDescription} icon="wallet-outline" title="Wallet readiness">
         <ReadinessUiStepCard
-          complete={isWebPreview ? false : isStepComplete('connectWallet')}
-          completeLabel={!isWebPreview && isStepComplete('connectWallet') ? 'Connected' : undefined}
-          description="Connect with Mobile Wallet Adapter. Your private keys stay inside your wallet app."
+          complete={isStepComplete('connectWallet')}
+          completeLabel={isStepComplete('connectWallet') ? 'Connected' : undefined}
+          description={connectWalletDescription}
           icon="wallet-outline"
           title="Connect wallet"
         >
           <View className="gap-3">
             <Text className={`text-sm ${TEXT_ON_SURFACE_MUTED}`}>
               {account
-                ? `Connected: ${ellipsify(account.address.toString())}`
+                ? connectedWalletLabel
+                  ? `Connected via ${connectedWalletLabel}: ${ellipsify(account.address.toString())}`
+                  : `Connected: ${ellipsify(account.address.toString())}`
                 : 'Status: Not connected'}
             </Text>
             {account ? (
@@ -97,6 +84,8 @@ export function ReadinessFeatureHome() {
               >
                 <Text className={`text-sm font-semibold ${TEXT_ON_SURFACE_TITLE}`}>Disconnect</Text>
               </ReadinessUiPressable>
+            ) : isBrowserWallet ? (
+              <WalletUiBrowserConnect connect={connect} />
             ) : (
               <WalletUiConnectButton connect={connect} />
             )}
@@ -104,35 +93,31 @@ export function ReadinessFeatureHome() {
         </ReadinessUiStepCard>
 
         <ReadinessUiStepCard
-          complete={isWebPreview ? false : isStepComplete('safeSignature')}
-          completeLabel={!isWebPreview && isStepComplete('safeSignature') ? 'Verified' : undefined}
+          complete={isStepComplete('safeSignature')}
+          completeLabel={isStepComplete('safeSignature') ? 'Verified' : undefined}
           description="Sign a fixed test message so the app can confirm your wallet can sign."
           icon="create-outline"
           title="Sign a test message"
         >
           {account ? (
             <ReadinessUiSignMessageStep
-              complete={isWebPreview ? false : isStepComplete('safeSignature')}
+              complete={isStepComplete('safeSignature')}
               signMessages={signMessages}
               walletAddress={account.address}
               onSuccess={() => markStepComplete('safeSignature')}
             />
           ) : (
             <Text className={`text-sm ${TEXT_ON_SURFACE_MUTED}`}>
-              {Platform.OS === 'web'
-                ? 'Sign-message testing requires the Android development build with an active wallet connection.'
-                : isStepComplete('connectWallet')
-                  ? 'Reconnect your wallet to test signing.'
-                  : 'Connect your wallet first to test signing.'}
+              {isStepComplete('connectWallet')
+                ? 'Reconnect your wallet to test signing.'
+                : 'Connect your wallet first to test signing.'}
             </Text>
           )}
         </ReadinessUiStepCard>
 
-        {!isWebPreview ? (
-          <Text className={`text-xs leading-5 ${TEXT_ON_SURFACE_MUTED}`}>
-            {walletCompletedCount}/{walletTotalCount} wallet steps complete
-          </Text>
-        ) : null}
+        <Text className={`text-xs leading-5 ${TEXT_ON_SURFACE_MUTED}`}>
+          {walletCompletedCount}/{walletTotalCount} wallet steps complete
+        </Text>
       </ReadinessUiSection>
 
       <ReadinessUiSection
